@@ -365,10 +365,14 @@ function theme_boost_union_infobanner_is_shown_on_page($bannerno) {
             }
             // If this info banner should be shown for this USER :
             $capsettingname = 'infobanner' . $bannerno . 'caps';
+            $hascap = false;
             foreach (explode(',', $config->{$capsettingname}) as $cap) {
                 if (has_capability($cap, $PAGE->context)) {
+                    $hascap = true;
                     break;
                 }
+            }
+            if ($hascap != true) {
                 return false;
             }
             // INFOBANNER HACK END ISIS, FDL, 20230614
