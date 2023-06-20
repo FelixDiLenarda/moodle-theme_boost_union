@@ -1312,6 +1312,12 @@ if ($hassiteconfig || has_capability('theme/boost_union:configure', context_syst
                         get_string('infobannerpageloginpage', 'theme_boost_union', null, false)
         );
 
+        // Prepare the list of capabilities to choose from.
+        $capabilitychoices = array();
+        foreach ($context->get_capabilities('name') as $cap) {
+            $capabilitychoices[$cap->name] = $cap->name . ': ' . get_capability_string($cap->name);
+        }
+
         // Prepare options for the bootstrap class settings.
         $infobannerbsclasses = array(
             // Don't use string lazy loading (= false) because the string will be directly used and would produce a
@@ -1378,6 +1384,16 @@ if ($hassiteconfig || has_capability('theme/boost_union:configure', context_syst
             $tab->add($setting);
             $page->hide_if('theme_boost_union/infobanner'.$i.'pages', 'theme_boost_union/infobanner'.$i.'enabled', 'neq',
                     THEME_BOOST_UNION_SETTING_SELECT_YES);
+
+            // Setting: Schow infobanner for specific capabilities
+            $name = 'theme_boost_union/infobanner'.$i.'caps';
+            $title = 'caps';
+            $description = 'Mit dieser Einstellungen können Sie wählen für welche User mit den gewählten Rechten das Banner angezeigt wird.';
+            $setting = new admin_setting_configmultiselect($name, $title, $description,
+                array(), $capabilitychoices);
+            $tab->add($setting);
+            $page->hide_if('theme_boost_union/infobanner'.$i.'caps', 'theme_boost_union/infobanner'.$i.'enabled', 'neq',
+                THEME_BOOST_UNION_SETTING_SELECT_YES);
 
             // Setting: Infobanner bootstrap class.
             $name = 'theme_boost_union/infobanner'.$i.'bsclass';

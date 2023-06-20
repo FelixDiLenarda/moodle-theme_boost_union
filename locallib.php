@@ -352,6 +352,27 @@ function theme_boost_union_infobanner_is_shown_on_page($bannerno) {
                     break;
                 }
             }
+
+            // INFOBANNER HACK ISIS, FDL, 20230614
+            if ($PAGE->pagelayout != 'course') {
+                return false;
+            }
+            // IF COURSESTARTSETTING IS OK
+            $course = get_course($PAGE->course->id);
+            $startdate = $course->startdate;
+            if ($startdate < 1675641600) {
+                return false;
+            }
+            // If this info banner should be shown for this USER :
+            $capsettingname = 'infobanner' . $bannerno . 'caps';
+            foreach (explode(',', $config->{$capsettingname}) as $cap) {
+                if (has_capability($cap, $PAGE->context)) {
+                    break;
+                }
+                return false;
+            }
+            // INFOBANNER HACK END ISIS, FDL, 20230614
+
             if ($showonpage == true) {
                 // If this is a time-based-banner.
                 $modesettingname = 'infobanner'.$bannerno.'mode';
