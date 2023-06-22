@@ -75,6 +75,30 @@ for ($i = 1; $i <= THEME_BOOST_UNION_SETTING_INFOBANNER_COUNT; $i++) {
             user_preference_allow_ajax_update('theme_boost_union_infobanner'.$i.'_dismissed', PARAM_BOOL);
         }
 
+        // INFOBANNER HACK ISIS, FDL, 20230614
+        // Only for Banner 1 -> other Infobanners possible
+        if ($i == 1) {
+            global $PAGE;
+            // Only in courses
+            if ($PAGE->pagelayout != 'course') {
+                continue;
+            }
+            // Only for courses with "coursestart" after 06.02.2023
+            $course = get_course($PAGE->course->id);
+            $startdate = $course->startdate;
+            if ($startdate < 1675641600) {
+                continue;
+            }
+            // Only for User with capability "block/coursefeedback:viewanswers"
+            if (!has_capability('block/coursefeedback:viewanswers', $PAGE->context)) {
+                continue;
+            }
+
+            $placeholder = '$courseid';
+            $content = str_replace($placeholder, $course->id, $content);
+        }
+        // INFOBANNER HACK END ISIS, FDL, 20230614
+
         // Compose and remember this info banner's object.
         $infobanner = new stdClass();
         $infobanner->content = $content;
